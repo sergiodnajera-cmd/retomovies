@@ -1,21 +1,15 @@
 import psycopg2
+import streamlit as st
 
-HOST = "pg-ad2a99d-sergiodnajera-3ffc.d.aivencloud.com"
-PORT = "22344"
-DATABASE = "defaultdb"
-USER = "avnadmin"
-
-# REEMPLAZA POR TU PASSWORD
-PASSWORD = "PASSWORD_OCULTO"
 
 def conectar():
 
     conn = psycopg2.connect(
-        host=HOST,
-        port=PORT,
-        database=DATABASE,
-        user=USER,
-        password=PASSWORD,
+        host=st.secrets["POSTGRES_HOST"],
+        port=st.secrets["POSTGRES_PORT"],
+        database=st.secrets["POSTGRES_DATABASE"],
+        user=st.secrets["POSTGRES_USER"],
+        password=st.secrets["POSTGRES_PASSWORD"],
         sslmode="require"
     )
 

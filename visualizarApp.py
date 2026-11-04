@@ -1,22 +1,34 @@
-import os
 import streamlit as st
 import pandas as pd
 from google.cloud import firestore
+from google.oauth2 import service_account
 from postgres_utils import insertar_visita, obtener_visitas
 
 # ==================================================
 # CONFIGURACION FIREBASE
 # ==================================================
 
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "firebase-key.json"
+credenciales = service_account.Credentials.from_service_account_info(
+    {
+        "type": "service_account",
+        "project_id": st.secrets["FIREBASE_PROJECT_ID"],
+        "private_key": st.secrets["FIREBASE_PRIVATE_KEY"],
+        "client_email": st.secrets["FIREBASE_CLIENT_EMAIL"],
+        "token_uri": "https://oauth2.googleapis.com/token",
+    }
+)
 
-db = firestore.Client()
+db = firestore.Client(
+    project=st.secrets["FIREBASE_PROJECT_ID"],
+    credentials=credenciales
+)
 
 # ==================================================
 # FUNCIONES
 # ==================================================
 
 def cargar_movies():
+
     docs = db.collection("movies").stream()
 
     movies = []
